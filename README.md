@@ -235,32 +235,6 @@ NEWS_LIMIT=10
 - Source credibility assessment
 - Misinformation detection
 
-### 🔍 Research
-
-- Academic research support
-- Information verification
-- Source evaluation
-- Content analysis
-
-### 📊 Journalism
-
-- Fact-checking tools
-- Source verification
-- Content analysis
-- Quality assessment
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
 ## 🙏 Acknowledgments
 
 - **HuggingFace**: For free embedding models
@@ -269,12 +243,58 @@ This project is licensed under the MIT License.
 - **ChromaDB**: For vector storage
 - **LangChain**: For RAG pipeline tools
 
-## 🆘 Support
+## 🔧 Troubleshooting
 
-- **Issues**: Create GitHub issues
-- **Documentation**: Check this README
-- **Community**: Join our discussions
+### ChromaDB Import Error
 
----
+If you encounter a ChromaDB import error like:
 
-**🎉 Enjoy your completely free, beautiful news fact-checking system!**
+```
+RuntimeError: This app has encountered an error...
+```
+
+**Solution:**
+
+1. **Update dependencies:**
+
+   ```bash
+   pip uninstall chromadb
+   pip install chromadb==0.4.22
+   pip install hnswlib>=0.7.0
+   ```
+
+2. **Test ChromaDB installation:**
+
+   ```bash
+   python test_chromadb.py
+   ```
+
+3. **Alternative: Use different Python version**
+   - ChromaDB works best with Python 3.8-3.11
+   - Avoid Python 3.12+ for now
+
+### Common Issues
+
+**Memory Issues:**
+
+- Reduce `NEWS_LIMIT` in config
+- Use smaller embedding models
+- Restart the app periodically
+
+**API Rate Limits:**
+
+- NewsAPI has daily limits on free tier
+- Consider upgrading to paid plan for production
+
+**Performance Issues:**
+
+- Use GPU if available (modify `device` in config)
+- Reduce chunk size for faster processing
+- Enable caching in Streamlit
+
+### Getting Help
+
+1. Run the test script: `python test_chromadb.py`
+2. Check the logs in Streamlit Cloud
+3. Verify your environment variables
+4. Ensure all dependencies are installed correctly

@@ -5,12 +5,14 @@ Complete RAG pipeline using only free tools.
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.prompts import PromptTemplate
 from typing import Dict, List, Any
 import config
 from fact_checker import FactChecker
 from evaluator import QueryTimer, create_evaluator
+import os
+import tempfile
 
 class RAGPipeline:
     """Complete RAG pipeline using only free tools."""
@@ -33,6 +35,10 @@ class RAGPipeline:
         self.chunk_size = rag_config['chunk_size']
         self.chunk_overlap = rag_config['chunk_overlap']
         self.top_k = rag_config['top_k']
+        
+        # Create a persistent directory for ChromaDB
+        self.persist_directory = os.path.join(tempfile.gettempdir(), "chroma_db")
+        os.makedirs(self.persist_directory, exist_ok=True)
 
     def ingest(self, articles: List[Dict]) -> None:
         """Ingest articles into the knowledge base."""
@@ -61,8 +67,26 @@ class RAGPipeline:
         )
         chunks = splitter.split_documents(docs)
         
-        # Create vector store
-        self.db = Chroma.from_documents(chunks, self.embedding)
+        # Create vector store with error handling
+        try:
+            self.db = Chroma.from_documents(
+                documents=chunks, 
+                embedding=self.embedding,
+                persist_directory=self.persist_directory
+            )
+            print(f"Successfully created ChromaDB with {len(chunks)} chunks")
+        except Exception as e:
+            print(f"Error creating ChromaDB: {e}")
+            # Fallback: try without persist directory
+            try:
+                self.db = Chroma.from_documents(
+                    documents=chunks, 
+                    embedding=self.embedding
+                )
+                print("Successfully created ChromaDB without persistence")
+            except Exception as e2:
+                print(f"Failed to create ChromaDB: {e2}")
+                raise RuntimeError(f"Could not initialize vector database: {e2}")
         
         self.evaluator.log_articles_processed(len(articles))
 
