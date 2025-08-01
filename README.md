@@ -30,7 +30,7 @@
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   https://github.com/mabasha17/TruthChain.git
    cd news-rag-project
    ```
 
