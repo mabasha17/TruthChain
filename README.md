@@ -1,6 +1,6 @@
 # 📰 News RAG with Fact-Checking
 
-**Complete real-time news analysis with AI-powered fact-checking using only free tools!**
+**Complete real-time news analysis with AI-powered fact-checking**
 
 ## 🚀 Features
 
