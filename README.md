@@ -240,14 +240,14 @@ NEWS_LIMIT=10
 - **HuggingFace**: For free embedding models
 - **NewsAPI**: For free news data
 - **Streamlit**: For the beautiful UI framework
-- **ChromaDB**: For vector storage
+- **FAISS**: For vector storage
 - **LangChain**: For RAG pipeline tools
 
 ## 🔧 Troubleshooting
 
-### ChromaDB Import Error
+### FAISS Import Error
 
-If you encounter a ChromaDB import error like:
+If you encounter a FAISS import error like:
 
 ```
 RuntimeError: This app has encountered an error...
@@ -258,20 +258,19 @@ RuntimeError: This app has encountered an error...
 1. **Update dependencies:**
 
    ```bash
-   pip uninstall chromadb
-   pip install chromadb==0.4.22
-   pip install hnswlib>=0.7.0
+   pip uninstall faiss-cpu
+   pip install faiss-cpu>=1.7.0
    ```
 
-2. **Test ChromaDB installation:**
+2. **Test FAISS installation:**
 
    ```bash
-   python test_chromadb.py
+   python test_faiss.py
    ```
 
 3. **Alternative: Use different Python version**
-   - ChromaDB works best with Python 3.8-3.11
-   - Avoid Python 3.12+ for now
+   - FAISS works with Python 3.8-3.13
+   - Avoid Python 3.14+ for now
 
 ### Common Issues
 
@@ -294,7 +293,7 @@ RuntimeError: This app has encountered an error...
 
 ### Getting Help
 
-1. Run the test script: `python test_chromadb.py`
+1. Run the test script: `python test_faiss.py`
 2. Check the logs in Streamlit Cloud
 3. Verify your environment variables
 4. Ensure all dependencies are installed correctly

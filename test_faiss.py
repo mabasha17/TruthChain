@@ -1,34 +1,33 @@
 #!/usr/bin/env python3
 """
-Test script to verify ChromaDB installation and basic functionality.
+Test script to verify FAISS installation and basic functionality.
 """
 
-def test_chromadb_import():
-    """Test if ChromaDB can be imported successfully."""
+def test_faiss_import():
+    """Test if FAISS can be imported successfully."""
     try:
-        import chromadb
-        print("✓ ChromaDB imported successfully")
-        print(f"  Version: {chromadb.__version__}")
+        import faiss
+        print("✓ FAISS imported successfully")
         return True
     except Exception as e:
-        print(f"✗ ChromaDB import failed: {e}")
+        print(f"✗ FAISS import failed: {e}")
         return False
 
-def test_langchain_chroma():
-    """Test if LangChain Chroma integration works."""
+def test_langchain_faiss():
+    """Test if LangChain FAISS integration works."""
     try:
-        from langchain_community.vectorstores import Chroma
+        from langchain_community.vectorstores import FAISS
         from langchain_huggingface import HuggingFaceEmbeddings
-        print("✓ LangChain Chroma import successful")
+        print("✓ LangChain FAISS import successful")
         return True
     except Exception as e:
-        print(f"✗ LangChain Chroma import failed: {e}")
+        print(f"✗ LangChain FAISS import failed: {e}")
         return False
 
 def test_basic_functionality():
-    """Test basic ChromaDB functionality."""
+    """Test basic FAISS functionality."""
     try:
-        from langchain_community.vectorstores import Chroma
+        from langchain_community.vectorstores import FAISS
         from langchain_huggingface import HuggingFaceEmbeddings
         from langchain.schema import Document
         
@@ -42,12 +41,12 @@ def test_basic_functionality():
         docs = [Document(page_content="This is a test document", metadata={"source": "test"})]
         
         # Create vector store
-        db = Chroma.from_documents(documents=docs, embedding=embedding)
+        db = FAISS.from_documents(documents=docs, embedding=embedding)
         
         # Test similarity search
         results = db.similarity_search("test", k=1)
         
-        print("✓ Basic ChromaDB functionality test passed")
+        print("✓ Basic FAISS functionality test passed")
         return True
         
     except Exception as e:
@@ -56,12 +55,12 @@ def test_basic_functionality():
 
 def main():
     """Run all tests."""
-    print("Testing ChromaDB installation and functionality...")
+    print("Testing FAISS installation and functionality...")
     print("=" * 50)
     
     tests = [
-        test_chromadb_import,
-        test_langchain_chroma,
+        test_faiss_import,
+        test_langchain_faiss,
         test_basic_functionality
     ]
     
@@ -77,13 +76,13 @@ def main():
     print(f"Tests passed: {passed}/{total}")
     
     if passed == total:
-        print("✓ All tests passed! ChromaDB should work correctly.")
+        print("✓ All tests passed! FAISS should work correctly.")
     else:
         print("✗ Some tests failed. Please check the error messages above.")
         print("\nTroubleshooting tips:")
-        print("1. Try reinstalling ChromaDB: pip uninstall chromadb && pip install chromadb==0.4.22")
-        print("2. Make sure you have the required dependencies: pip install hnswlib")
-        print("3. Check if you're using a compatible Python version (3.8-3.11)")
+        print("1. Try reinstalling FAISS: pip uninstall faiss-cpu && pip install faiss-cpu")
+        print("2. Make sure you have the required dependencies: pip install numpy")
+        print("3. Check if you're using a compatible Python version")
 
 if __name__ == "__main__":
     main() 

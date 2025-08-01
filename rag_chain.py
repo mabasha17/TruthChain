@@ -4,7 +4,7 @@ Complete RAG pipeline using only free tools.
 
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.prompts import PromptTemplate
 from typing import Dict, List, Any
@@ -36,8 +36,8 @@ class RAGPipeline:
         self.chunk_overlap = rag_config['chunk_overlap']
         self.top_k = rag_config['top_k']
         
-        # Create a persistent directory for ChromaDB
-        self.persist_directory = os.path.join(tempfile.gettempdir(), "chroma_db")
+        # Create a persistent directory for FAISS
+        self.persist_directory = os.path.join(tempfile.gettempdir(), "faiss_db")
         os.makedirs(self.persist_directory, exist_ok=True)
 
     def ingest(self, articles: List[Dict]) -> None:
@@ -69,23 +69,28 @@ class RAGPipeline:
         
         # Create vector store with error handling
         try:
-            self.db = Chroma.from_documents(
+            self.db = FAISS.from_documents(
                 documents=chunks, 
-                embedding=self.embedding,
-                persist_directory=self.persist_directory
+                embedding=self.embedding
             )
-            print(f"Successfully created ChromaDB with {len(chunks)} chunks")
+            print(f"Successfully created FAISS with {len(chunks)} chunks")
         except Exception as e:
-            print(f"Error creating ChromaDB: {e}")
-            # Fallback: try without persist directory
+            print(f"Error creating FAISS: {e}")
+            # Fallback: try with different parameters
             try:
-                self.db = Chroma.from_documents(
-                    documents=chunks, 
+                # Try with smaller chunks if memory is an issue
+                smaller_splitter = RecursiveCharacterTextSplitter(
+                    chunk_size=min(self.chunk_size, 200),
+                    chunk_overlap=min(self.chunk_overlap, 50)
+                )
+                smaller_chunks = smaller_splitter.split_documents(docs)
+                self.db = FAISS.from_documents(
+                    documents=smaller_chunks, 
                     embedding=self.embedding
                 )
-                print("Successfully created ChromaDB without persistence")
+                print(f"Successfully created FAISS with smaller chunks: {len(smaller_chunks)}")
             except Exception as e2:
-                print(f"Failed to create ChromaDB: {e2}")
+                print(f"Failed to create FAISS: {e2}")
                 raise RuntimeError(f"Could not initialize vector database: {e2}")
         
         self.evaluator.log_articles_processed(len(articles))
